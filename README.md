@@ -7,11 +7,13 @@ To Train the CoFormer,
 
 Installation and requirements:
 
-`conda create -n cofermer python==3.8`
+```
+conda create -n cofermer python==3.8
 
-`conda activate cofermer`
+conda activate cofermer
 
-`pip3 install -r requirements.txt`
+pip3 install -r requirements.txt
+```
 
 
 Firstly go in the directory `_make_data`
@@ -35,7 +37,7 @@ give the firslty change the saved model path in the `cfg.py` and run the `infer.
 
 please cite 
 
-
+```
 @inproceedings { ref186,
 	
  title            = "Textual Alchemy: CoFormer for Scene Text Understanding",
@@ -47,3 +49,4 @@ please cite
 booktitle        = "IEEE/CVF Winter Conference on Applications of Computer Vision (WACV)"
 
 }
+```

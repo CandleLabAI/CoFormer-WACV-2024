@@ -1,7 +1,40 @@
-# CoFormer-WACV-2024
-Source code of "Textual Alchemy: CoFormer for Scene Text Understanding", published in WACV 2024
+This is the official reposiotry of CoFormer for Scene Text Understanding
 
-If you use this code, please cite 
+![Screenshot](figs/coformer.png)
+
+
+To Train the CoFormer,
+
+Installation and requirements:
+
+`conda create -n cofermer python==3.8`
+
+`conda activate cofermer`
+
+`pip3 install -r requirements.txt`
+
+
+Firstly go in the directory `_make_data`
+Create the synthetic data as per the instructions given the README.md
+
+Update the the training directory and model_save directory path in the `cfg.py`
+change the hyper-parameters in the `cfg.py` according to your system
+
+Change the `data_dir ` and `checkpoint_savedir` path fin the `cfg.py`
+
+For training:
+
+run `train.py`
+
+To Infer the model
+
+To get the direct inference download pretrained model weights from here and put it in the "trained_model" directory
+
+give the firslty change the saved model path in the `cfg.py` and run the `infer.py`
+
+
+please cite 
+
 
 @inproceedings { ref186,
 	

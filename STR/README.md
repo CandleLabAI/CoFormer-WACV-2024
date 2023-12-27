@@ -2,7 +2,7 @@
 
 # CoFormer For Scene Test Recogniton
 
-Scene Text Recognition (STR) models use language context to be more robust against noisy or corrupted images. Recent approaches like ABINet use a standalone or external Language Model (LM) for prediction refinement. In this work, we show that the external LM&mdash;which requires upfront allocation of dedicated compute capacity&mdash;is inefficient for STR due to its poor performance vs cost characteristics. We propose a more efficient approach using **p**ermuted **a**uto**r**egressive **seq**uence (CoFormer) models. View our ECCV [poster](https://drive.google.com/file/d/19luOT_RMqmafLMhKQQHBnHNXV7fOCRfw/view) and [presentation](https://drive.google.com/file/d/11VoZW4QC5tbMwVIjKB44447uTiuCJAAD/view) for a brief overview.
+Scene Text Recognition (STR) models use language context to be more robust against noisy or corrupted images. Recent approaches like ABINet use a standalone or external Language Model (LM) for prediction refinement. In this work, we show that the external LM&mdash;which requires upfront allocation of dedicated compute capacity&mdash;is inefficient for STR due to its poor performance vs cost characteristics.
 
 ![CoFormer](.github/gh-teaser.png)
 
@@ -10,14 +10,14 @@ Scene Text Recognition (STR) models use language context to be more robust again
 
 ### Method tl;dr
 
-Our main insight is that with an ensemble of autoregressive (AR) models, we could unify the current STR decoding methods (context-aware AR and context-free non-AR) and the bidirectional (cloze) refinement model:
-<div align="center"><img src=".github/contexts-example.png" alt="Unified STR model" width="75%"/></div>
+Our main insight is that with an ensemble of autoregressive (AR) models, we could unify the current STR decoding methods (context-aware AR and context-free non-AR (CTC)) and the bidirectional (cloze) refinement model:
+
 
 A single Transformer can realize different models by merely varying its attention mask. With the correct decoder parameterization, it can be trained with Permutation Language Modeling to enable inference for arbitrary output positions given arbitrary subsets of the input context. This *arbitrary decoding* characteristic results in a _unified_ STR model&mdash;CoFormer&mdash;capable of context-free and context-aware inference, as well as iterative prediction refinement using bidirectional context **without** requiring a standalone language model. CoFormer can be considered an ensemble of AR models with shared architecture and weights:
 
-![System](.github/system.png)
+
 **NOTE:** _LayerNorm and Dropout layers are omitted. `[B]`, `[E]`, and `[P]` stand for beginning-of-sequence (BOS), end-of-sequence (EOS), and padding tokens, respectively. `T` = 25 results in 26 distinct position tokens. The position tokens both serve as query vectors and position embeddings for the input context. For `[B]`, no position embedding is added. Attention
-masks are generated from the given permutations and are used only for the context-position attention. L<sub>ce</sub> pertains to the cross-entropy loss._
+masks are used only for the context-position attention. L<sub>ce</sub> pertains to the cross-entropy loss._
 
 ### Sample Results
 <div align="center">
@@ -40,7 +40,7 @@ Majority of the code is licensed under the Apache License v2.0 (see `LICENSE`) w
 released under the BSD and MIT licenses, respectively (see corresponding `LICENSE` files for details).
 
 ### Demo
-An [interactive Gradio demo](https://huggingface.co/spaces/baudm/CoFormer-OCR) hosted at Hugging Face is available. The pretrained weights released here are used for the demo.
+An [interactive Gradio demo](https://huggingface.co/spaces/onkarsus13/CoFormer) hosted at Hugging Face is available. The pretrained weights released here are used for the demo.
 
 ### Installation
 Requires Python >= 3.8 and PyTorch >= 1.10 (until 1.13). The default requirements files will install the latest versions of the dependencies (as of June 1, 2023).

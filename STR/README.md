@@ -2,18 +2,18 @@
 
 # CoFormer For Scene Test Recogniton
 
-Scene Text Recognition (STR) models use language context to be more robust against noisy or corrupted images. Recent approaches like ABINet use a standalone or external Language Model (LM) for prediction refinement. In this work, we show that the external LM&mdash;which requires upfront allocation of dedicated compute capacity&mdash;is inefficient for STR due to its poor performance vs cost characteristics. We propose a more efficient approach using **p**ermuted **a**uto**r**egressive **seq**uence (cofermer) models. View our ECCV [poster](https://drive.google.com/file/d/19luOT_RMqmafLMhKQQHBnHNXV7fOCRfw/view) and [presentation](https://drive.google.com/file/d/11VoZW4QC5tbMwVIjKB44447uTiuCJAAD/view) for a brief overview.
+Scene Text Recognition (STR) models use language context to be more robust against noisy or corrupted images. Recent approaches like ABINet use a standalone or external Language Model (LM) for prediction refinement. In this work, we show that the external LM&mdash;which requires upfront allocation of dedicated compute capacity&mdash;is inefficient for STR due to its poor performance vs cost characteristics. We propose a more efficient approach using **p**ermuted **a**uto**r**egressive **seq**uence (CoFormer) models. View our ECCV [poster](https://drive.google.com/file/d/19luOT_RMqmafLMhKQQHBnHNXV7fOCRfw/view) and [presentation](https://drive.google.com/file/d/11VoZW4QC5tbMwVIjKB44447uTiuCJAAD/view) for a brief overview.
 
-![cofermer](.github/gh-teaser.png)
+![CoFormer](.github/gh-teaser.png)
 
-**NOTE:** _P-S and P-Ti are shorthands for cofermer-S and cofermer-Ti, respectively._
+**NOTE:** _P-S and P-Ti are shorthands for CoFormer-S and CoFormer-Ti, respectively._
 
 ### Method tl;dr
 
 Our main insight is that with an ensemble of autoregressive (AR) models, we could unify the current STR decoding methods (context-aware AR and context-free non-AR) and the bidirectional (cloze) refinement model:
 <div align="center"><img src=".github/contexts-example.png" alt="Unified STR model" width="75%"/></div>
 
-A single Transformer can realize different models by merely varying its attention mask. With the correct decoder parameterization, it can be trained with Permutation Language Modeling to enable inference for arbitrary output positions given arbitrary subsets of the input context. This *arbitrary decoding* characteristic results in a _unified_ STR model&mdash;cofermer&mdash;capable of context-free and context-aware inference, as well as iterative prediction refinement using bidirectional context **without** requiring a standalone language model. cofermer can be considered an ensemble of AR models with shared architecture and weights:
+A single Transformer can realize different models by merely varying its attention mask. With the correct decoder parameterization, it can be trained with Permutation Language Modeling to enable inference for arbitrary output positions given arbitrary subsets of the input context. This *arbitrary decoding* characteristic results in a _unified_ STR model&mdash;CoFormer&mdash;capable of context-free and context-aware inference, as well as iterative prediction refinement using bidirectional context **without** requiring a standalone language model. CoFormer can be considered an ensemble of AR models with shared architecture and weights:
 
 ![System](.github/system.png)
 **NOTE:** _LayerNorm and Dropout layers are omitted. `[B]`, `[E]`, and `[P]` stand for beginning-of-sequence (BOS), end-of-sequence (EOS), and padding tokens, respectively. `T` = 25 results in 26 distinct position tokens. The position tokens both serve as query vectors and position embeddings for the input context. For `[B]`, no position embedding is added. Attention
@@ -22,7 +22,7 @@ masks are generated from the given permutations and are used only for the contex
 ### Sample Results
 <div align="center">
 
-| Input Image                                                                | cofermer-S<sub>A</sub> | ABINet            | TRBA              | ViTSTR-S          | CRNN              |
+| Input Image                                                                | CoFormer-S<sub>A</sub> | ABINet            | TRBA              | ViTSTR-S          | CRNN              |
 |:--------------------------------------------------------------------------:|:--------------------:|:-----------------:|:-----------------:|:-----------------:|:-----------------:|
 | <img src="demo_images/art-01107.jpg" alt="CHEWBACCA" width="128"/>         | CHEWBACCA            | CHEWBA**GG**A     | CHEWBACCA         | CHEWBACCA         | CHEW**U**ACCA     |
 | <img src="demo_images/coco-1166773.jpg" alt="Chevron" width="128"/>        | Chevro**l**          | Chevro\_          | Chevro\_          | Chevr\_\_         | Chevr\_\_         |
@@ -35,12 +35,12 @@ masks are generated from the given permutations and are used only for the contex
 </div>
 
 ## Getting Started
-This repository contains the reference implementation for cofermer and reproduced models (collectively referred to as _Scene Text Recognition Model Hub_). See `NOTICE` for copyright information.
+This repository contains the reference implementation for CoFormer and reproduced models (collectively referred to as _Scene Text Recognition Model Hub_). See `NOTICE` for copyright information.
 Majority of the code is licensed under the Apache License v2.0 (see `LICENSE`) while ABINet and CRNN sources are
 released under the BSD and MIT licenses, respectively (see corresponding `LICENSE` files for details).
 
 ### Demo
-An [interactive Gradio demo](https://huggingface.co/spaces/baudm/cofermer-OCR) hosted at Hugging Face is available. The pretrained weights released here are used for the demo.
+An [interactive Gradio demo](https://huggingface.co/spaces/baudm/CoFormer-OCR) hosted at Hugging Face is available. The pretrained weights released here are used for the demo.
 
 ### Installation
 Requires Python >= 3.8 and PyTorch >= 1.10 (until 1.13). The default requirements files will install the latest versions of the dependencies (as of June 1, 2023).
@@ -63,35 +63,35 @@ Download the [datasets](Datasets.md) from the following links:
 2. [LMDB archives](https://drive.google.com/drive/folders/1D9z_YJVa6f-O0juni-yG5jcwnhvYw-qC) for TextOCR and OpenVINO.
 
 ### Pretrained Models via Torch Hub
-Available models are: `abinet`, `crnn`, `trba`, `vitstr`, `cofermer_tiny`, and `cofermer`.
+Available models are: `abinet`, `crnn`, `trba`, `vitstr`, `CoFormer_tiny`, and `CoFormer`.
 ```python
 import torch
 from PIL import Image
 from strhub.data.module import SceneTextDataModule
 
 # Load model and image transforms
-cofermer = torch.hub.load('baudm/cofermer', 'cofermer', pretrained=True).eval()
-img_transform = SceneTextDataModule.get_transform(cofermer.hparams.img_size)
+CoFormer = torch.hub.load('baudm/CoFormer', 'CoFormer', pretrained=True).eval()
+img_transform = SceneTextDataModule.get_transform(CoFormer.hparams.img_size)
 
 img = Image.open('/path/to/image.png').convert('RGB')
 # Preprocess. Model expects a batch of images with shape: (B, C, H, W)
 img = img_transform(img).unsqueeze(0)
 
-logits = cofermer(img)
+logits = CoFormer(img)
 logits.shape  # torch.Size([1, 26, 95]), 94 characters + [EOS] symbol
 
 # Greedy decoding
 pred = logits.softmax(-1)
-label, confidence = cofermer.tokenizer.decode(pred)
+label, confidence = CoFormer.tokenizer.decode(pred)
 print('Decoded label = {}'.format(label[0]))
 ```
 
 ## Frequently Asked Questions
-- How do I train on a new language? See Issues [#5](https://github.com/baudm/cofermer/issues/5) and [#9](https://github.com/baudm/cofermer/issues/9).
-- Can you export to TorchScript or ONNX? Yes, see Issue [#12](https://github.com/baudm/cofermer/issues/12#issuecomment-1267842315).
-- How do I test on my own dataset? See Issue [#27](https://github.com/baudm/cofermer/issues/27).
-- How do I finetune and/or create a custom dataset? See Issue [#7](https://github.com/baudm/cofermer/issues/7).
-- What is `val_NED`? See Issue [#10](https://github.com/baudm/cofermer/issues/10).
+- How do I train on a new language? See Issues [#5](https://github.com/baudm/CoFormer/issues/5) and [#9](https://github.com/baudm/CoFormer/issues/9).
+- Can you export to TorchScript or ONNX? Yes, see Issue [#12](https://github.com/baudm/CoFormer/issues/12#issuecomment-1267842315).
+- How do I test on my own dataset? See Issue [#27](https://github.com/baudm/CoFormer/issues/27).
+- How do I finetune and/or create a custom dataset? See Issue [#7](https://github.com/baudm/CoFormer/issues/7).
+- What is `val_NED`? See Issue [#10](https://github.com/baudm/CoFormer/issues/10).
 
 ## Training
 The training script can train any supported model. You can override any configuration using the command line. Please refer to [Hydra](https://hydra.cc) docs for more info about the syntax. Use `./train.py --help` to see the default configuration.
@@ -106,7 +106,7 @@ The training script can train any supported model. You can override any configur
 ### Train a model variant/preconfigured experiment
 The base model configurations are in `configs/model/`, while variations are stored in `configs/experiment/`.
 ```bash
-./train.py +experiment=cofermer-tiny  # Some examples: abinet-sv, trbc
+./train.py +experiment=CoFormer-tiny  # Some examples: abinet-sv, trbc
 ```
 
 ### Specify the character set for training
@@ -146,13 +146,13 @@ you just need to prefix it with `+` if it is not originally specified in `config
 ## Evaluation
 The test script, ```test.py```, can be used to evaluate any model trained with this project. For more info, see ```./test.py --help```.
 
-cofermer runtime parameters can be passed using the format `param:type=value`. For example, cofermer NAR decoding can be invoked via `./test.py cofermer.ckpt refine_iters:int=2 decode_ar:bool=false`.
+CoFormer runtime parameters can be passed using the format `param:type=value`. For example, CoFormer NAR decoding can be invoked via `./test.py CoFormer.ckpt refine_iters:int=2 decode_ar:bool=false`.
 
 <details><summary>Sample commands for reproducing results</summary><p>
 
 ### Lowercase alphanumeric comparison on benchmark datasets (Table 6)
 ```bash
-./test.py outputs/<model>/<timestamp>/checkpoints/last.ckpt  # or use the released weights: ./test.py pretrained=cofermer
+./test.py outputs/<model>/<timestamp>/checkpoints/last.ckpt  # or use the released weights: ./test.py pretrained=CoFormer
 ```
 **Sample output:**
 | Dataset   | # samples | Accuracy | 1 - NED | Confidence | Label Length |
@@ -180,7 +180,7 @@ cofermer runtime parameters can be passed using the format `param:type=value`. F
 
 ### Benchmark Model Compute Requirements (Figure 5)
 ```bash
-./bench.py model=cofermer model.decode_ar=false model.refine_iters=3
+./bench.py model=CoFormer model.decode_ar=false model.refine_iters=3
 <torch.utils.benchmark.utils.common.Measurement object at 0x7f8fcae67ee0>
 model(x)
   Median: 14.87 ms
@@ -197,7 +197,7 @@ model(x)
 
 ### Latency Measurements vs Output Label Length (Appendix I)
 ```bash
-./bench.py model=cofermer model.decode_ar=false model.refine_iters=3 +range=true
+./bench.py model=CoFormer model.decode_ar=false model.refine_iters=3 +range=true
 ```
 
 ### Orientation robustness benchmark (Appendix J)
@@ -210,7 +210,7 @@ model(x)
 
 ### Using trained models to read text from images (Appendix L)
 ```bash
-./read.py outputs/<model>/<timestamp>/checkpoints/last.ckpt --images demo_images/*  # Or use ./read.py pretrained=cofermer
+./read.py outputs/<model>/<timestamp>/checkpoints/last.ckpt --images demo_images/*  # Or use ./read.py pretrained=CoFormer
 Additional keyword arguments: {}
 demo_images/art-01107.jpg: CHEWBACCA
 demo_images/coco-1166773.jpg: Chevrol
@@ -219,8 +219,8 @@ demo_images/ic13_word_256.png: Verbandsteffe
 demo_images/ic15_word_26.png: Kaopa
 demo_images/uber-27491.jpg: 3rdAve
 
-# use NAR decoding + 2 refinement iterations for cofermer
-./read.py pretrained=cofermer refine_iters:int=2 decode_ar:bool=false --images demo_images/*
+# use NAR decoding + 2 refinement iterations for CoFormer
+./read.py pretrained=CoFormer refine_iters:int=2 decode_ar:bool=false --images demo_images/*
 ```
 </p></details>
 
@@ -228,7 +228,7 @@ demo_images/uber-27491.jpg: 3rdAve
 
 We use [Ray Tune](https://www.ray.io/ray-tune) for automated parameter tuning of the learning rate. See `./tune.py --help`. Extend `tune.py` to support tuning of other hyperparameters.
 ```bash
-./tune.py tune.num_samples=20  # find optimum LR for cofermer's default config using 20 trials
+./tune.py tune.num_samples=20  # find optimum LR for CoFormer's default config using 20 trials
 ./tune.py +experiment=tune_abinet-lm  # find the optimum learning rate for ABINet's language model
 ```
 
